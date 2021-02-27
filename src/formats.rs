@@ -1,3 +1,5 @@
+//! Supported formats. Each module here is toggled by a feature of the same name.
+
 #[cfg(feature = "bincode")]
 pub mod bincode;
 #[cfg(feature = "cbor")]

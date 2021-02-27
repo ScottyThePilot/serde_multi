@@ -1,24 +1,33 @@
+//! Enums for dynamically picking data formats.
+
 use serde::de::{Deserialize, DeserializeOwned};
 use serde::ser::Serialize;
 use std::io::{Read, Write};
 
 #[cfg(feature = "bincode")]
-use crate::format::bincode;
+use crate::formats::bincode;
 #[cfg(feature = "cbor")]
-use crate::format::cbor;
+use crate::formats::cbor;
 #[cfg(feature = "json")]
-use crate::format::json;
+use crate::formats::json;
 #[cfg(feature = "messagepack")]
-use crate::format::messagepack;
+use crate::formats::messagepack;
 #[cfg(feature = "ron")]
-use crate::format::ron;
+use crate::formats::ron;
 #[cfg(feature = "toml")]
-use crate::format::toml;
+use crate::formats::toml;
 #[cfg(feature = "xml")]
-use crate::format::xml;
+use crate::formats::xml;
 
 use crate::traits::{Serde, SerdeBytes, SerdePretty, SerdeStream, SerdeText};
 
+/// Dynamically pick which format data is serialized from or deserialized into.
+/// 
+/// Note: calling the respective trait function for a format that does
+/// not support it will return a [`FormatError::Unsupported`] `Err`
+/// to indicate that that operation was not supported by the format.
+/// 
+/// [`FormatError::Unsupported`]: ./enum.FormatError.html#variant.Unsupported
 #[non_exhaustive]
 #[derive(Copy, Clone)]
 pub enum Format {
@@ -268,74 +277,74 @@ impl From<xml::Xml> for Format {
 #[non_exhaustive]
 pub enum FormatError {
   #[cfg(feature = "bincode")]
-  Bincode(bincode::Error),
+  Bincode(bincode::BincodeError),
   #[cfg(feature = "cbor")]
-  Cbor(cbor::Error),
+  Cbor(cbor::CborError),
   #[cfg(feature = "json")]
-  Json(json::Error),
+  Json(json::JsonError),
   #[cfg(feature = "messagepack")]
-  MessagePack(messagepack::Error),
+  MessagePack(messagepack::MessagePackError),
   #[cfg(feature = "ron")]
-  Ron(ron::Error),
+  Ron(ron::RonError),
   #[cfg(feature = "toml")]
-  Toml(toml::Error),
+  Toml(toml::TomlError),
   #[cfg(feature = "xml")]
-  Xml(xml::Error),
+  Xml(xml::XmlError),
   Unsupported
 }
 
 #[cfg(feature = "bincode")]
-impl From<bincode::Error> for FormatError {
+impl From<bincode::BincodeError> for FormatError {
   #[inline]
-  fn from(error: bincode::Error) -> FormatError {
+  fn from(error: bincode::BincodeError) -> FormatError {
     FormatError::Bincode(error)
   }
 }
 
 #[cfg(feature = "cbor")]
-impl From<cbor::Error> for FormatError {
+impl From<cbor::CborError> for FormatError {
   #[inline]
-  fn from(error: cbor::Error) -> FormatError {
+  fn from(error: cbor::CborError) -> FormatError {
     FormatError::Cbor(error)
   }
 }
 
 #[cfg(feature = "json")]
-impl From<json::Error> for FormatError {
+impl From<json::JsonError> for FormatError {
   #[inline]
-  fn from(error: json::Error) -> FormatError {
+  fn from(error: json::JsonError) -> FormatError {
     FormatError::Json(error)
   }
 }
 
 #[cfg(feature = "messagepack")]
-impl From<messagepack::Error> for FormatError {
+impl From<messagepack::MessagePackError> for FormatError {
   #[inline]
-  fn from(error: messagepack::Error) -> FormatError {
+  fn from(error: messagepack::MessagePackError) -> FormatError {
     FormatError::MessagePack(error)
   }
 }
 
 #[cfg(feature = "ron")]
-impl From<ron::Error> for FormatError {
+impl From<ron::RonError> for FormatError {
   #[inline]
-  fn from(error: ron::Error) -> FormatError {
+  fn from(error: ron::RonError) -> FormatError {
     FormatError::Ron(error)
   }
 }
 
 #[cfg(feature = "toml")]
-impl From<toml::Error> for FormatError {
+impl From<toml::TomlError> for FormatError {
   #[inline]
-  fn from(error: toml::Error) -> FormatError {
+  fn from(error: toml::TomlError) -> FormatError {
     FormatError::Toml(error)
   }
 }
 
 #[cfg(feature = "xml")]
-impl From<xml::Error> for FormatError {
+impl From<xml::XmlError> for FormatError {
   #[inline]
-  fn from(error: xml::Error) -> FormatError {
+  fn from(error: xml::XmlError) -> FormatError {
     FormatError::Xml(error)
   }
 }
