@@ -14,3 +14,7 @@ pub mod ron;
 pub mod toml;
 #[cfg(feature = "xml")]
 pub mod xml;
+
+fn map_err<T: std::error::Error + 'static>(err: T) -> crate::Error {
+  Box::new(err)
+}

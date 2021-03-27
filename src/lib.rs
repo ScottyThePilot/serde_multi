@@ -4,6 +4,9 @@
 //! This crate does not do any substantial extra work, it simply re-organizes
 //! the APIs of a number of other serde file format crates.
 //! 
+//! Formats can be chosen dynamically with generics using the traits, or with dynamic dispatch.
+//! All file formats here implement ``
+//! 
 //! Each file format is toggled via feature, all of which are disabled by default.
 //! 
 //! Currently the only supported file formats are:
@@ -32,5 +35,7 @@ pub mod formats;
 pub mod multi;
 pub mod traits;
 
-pub use multi::*;
+//pub use multi::*;
 pub use traits::*;
+
+pub type Error = Box<dyn std::error::Error + 'static>;
