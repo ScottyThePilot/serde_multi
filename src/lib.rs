@@ -38,4 +38,4 @@ pub mod traits;
 //pub use multi::*;
 pub use traits::*;
 
-pub type Error = Box<dyn std::error::Error + 'static>;
+pub type Error = Box<dyn std::error::Error + Send + Sync + 'static>;
