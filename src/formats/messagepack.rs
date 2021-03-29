@@ -9,7 +9,7 @@ use std::io::{Read, Write};
 
 use crate::traits::{SerdeBytes, SerdeStream};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct MessagePack;
 
 function!(to_vec, super::map_err, |value| rmp_serde::to_vec(value));

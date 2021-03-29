@@ -8,7 +8,7 @@ use std::io::{Read, Write};
 
 use crate::traits::{SerdeBytes, SerdeStream, SerdeText};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct Xml;
 
 function!(to_string, super::map_err, serde_xml_rs::to_string);

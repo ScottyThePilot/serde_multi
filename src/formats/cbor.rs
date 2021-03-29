@@ -8,7 +8,7 @@ use std::io::{Read, Write};
 
 use crate::traits::{SerdeBytes, SerdeStream};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct Cbor;
 
 function!(to_vec, super::map_err, serde_cbor::to_vec);

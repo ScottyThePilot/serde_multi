@@ -8,7 +8,7 @@ use std::io::{Read, Write};
 
 use crate::traits::{SerdeBytes, SerdeStream};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct Bincode;
 
 function!(to_vec, map_err, |value| serde_bincode::serialize(value));

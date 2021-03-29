@@ -12,7 +12,7 @@ use std::io::{Read, Write};
 
 use crate::traits::{SerdeBytes, SerdeStream, SerdeText};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct Toml;
 
 function!(to_string_pretty, super::map_err, serde_toml::to_string_pretty);

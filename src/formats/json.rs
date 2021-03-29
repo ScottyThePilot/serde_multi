@@ -8,7 +8,7 @@ use std::io::{Read, Write};
 
 use crate::traits::{SerdeBytes, SerdeStream, SerdeText};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct Json;
 
 function!(to_string_pretty, super::map_err, serde_json::to_string_pretty);
