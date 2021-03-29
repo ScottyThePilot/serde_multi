@@ -10,7 +10,7 @@ use serde::de::{Deserialize, DeserializeOwned};
 use serde::ser::Serialize;
 use std::io::{Read, Write};
 
-use crate::traits::{SerdeBytes, SerdePretty, SerdeStream, SerdeText};
+use crate::traits::{SerdeBytes, SerdeStream, SerdeText};
 
 #[derive(Copy, Clone)]
 pub struct Toml;
@@ -40,4 +40,3 @@ function!(from_reader, |t| t, |reader| {
 implement!(Toml, SerdeTextPretty);
 implement!(Toml, SerdeBytesPretty);
 implement!(Toml, SerdeStreamPretty);
-implement!(Toml, SerdePretty);

@@ -6,7 +6,7 @@ use serde::de::{Deserialize, DeserializeOwned};
 use serde::ser::Serialize;
 use std::io::{Read, Write};
 
-use crate::traits::{SerdeBytes, SerdePretty, SerdeStream, SerdeText};
+use crate::traits::{SerdeBytes, SerdeStream, SerdeText};
 
 #[derive(Copy, Clone)]
 pub struct Ron;
@@ -24,7 +24,6 @@ function!(from_reader, super::map_err, serde_ron::de::from_reader);
 implement!(Ron, SerdeTextPretty);
 implement!(Ron, SerdeBytesPretty);
 implement!(Ron, SerdeStreamPretty);
-implement!(Ron, SerdePretty);
 
 #[inline]
 fn pretty() -> serde_ron::ser::PrettyConfig {

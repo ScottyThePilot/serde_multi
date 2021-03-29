@@ -11,14 +11,11 @@ use crate::Error;
 /// This trait is meant to be implemented for non-binary formats.
 pub trait SerdeText: SerdeBytes {
   /// Pretty-print serialize a value to a `String`.
-  /// 
-  /// This function should ONLY be implemented for types that also implement
-  /// [`SerdePretty`], which make this function usable in the first place.
-  /// 
-  /// [`SerdePretty`]: ./trait.SerdePretty.html
+  /// If this format does not support pretty-printing, this will defer to `to_string` instead.
+  #[inline]
   fn to_string_pretty<T>(&self, value: &T) -> Result<String, Error>
-  where T: Serialize, Self: SerdePretty + Sized {
-    unimplemented!()
+  where T: Serialize, Self: Sized {
+    self.to_string(value)
   }
 
   /// Serialize a value to a `String`.
@@ -34,14 +31,11 @@ pub trait SerdeText: SerdeBytes {
 /// This trait is meant to be implemented for every format.
 pub trait SerdeBytes {
   /// Pretty-print serialize a value to a `String`.
-  /// 
-  /// This function should ONLY be implemented for types that also implement
-  /// [`SerdePretty`], which make this function usable in the first place.
-  /// 
-  /// [`SerdePretty`]: ./trait.SerdePretty.html
+  /// If this format does not support pretty-printing, this will defer to `to_vec` instead.
+  #[inline]
   fn to_vec_pretty<T>(&self, value: &T) -> Result<Vec<u8>, Error>
-  where T: Serialize, Self: SerdePretty + Sized {
-    unimplemented!()
+  where T: Serialize, Self: Sized {
+    self.to_vec(value)
   }
 
   /// Serialize a value to a `Vec<u8>`.
@@ -56,14 +50,11 @@ pub trait SerdeBytes {
 /// A trait for serialization/deserialization to and from `Read` and `Write` streams.
 pub trait SerdeStream: SerdeBytes {
   /// Pretty-print serialize a value into a `Write` streams.
-  /// 
-  /// This function should ONLY be implemented for types that also implement
-  /// [`SerdePretty`], which make this function usable in the first place.
-  /// 
-  /// [`SerdePretty`]: ./trait.SerdePretty.html
+  /// If this format does not support pretty-printing, this will defer to `to_writer` instead.
+  #[inline]
   fn to_writer_pretty<W, T>(&self, writer: W, value: &T) -> Result<(), Error>
-  where W: Write, T: Serialize, Self: SerdePretty + Sized {
-    unimplemented!()
+  where W: Write, T: Serialize, Self: Sized {
+    self.to_writer(writer, value)
   }
 
   /// Serialize a value into a `Write` stream.
@@ -74,10 +65,3 @@ pub trait SerdeStream: SerdeBytes {
   fn from_reader<R, T>(&self, reader: R) -> Result<T, Error>
   where R: Read, T: DeserializeOwned, Self: Sized;
 }
-
-/// A trait for pretty-print serialization.
-/// 
-/// The other trait's `to_x_pretty()` functions should ONLY be implemented
-/// when this trait is also implemented, otherwise Rust's type system will not
-/// let you call that function.
-pub trait SerdePretty: SerdeText {}

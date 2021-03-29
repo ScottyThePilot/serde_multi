@@ -1,7 +1,4 @@
 macro_rules! implement {
-  ($type:ty, SerdePretty) => {
-    impl SerdePretty for $type {}
-  };
   ($type:ty, SerdeText) => {
     impl SerdeText for $type {
       #[inline]
@@ -21,7 +18,7 @@ macro_rules! implement {
     impl SerdeText for $type {
       #[inline]
       fn to_string_pretty<T>(&self, value: &T) -> Result<String, crate::Error>
-      where T: Serialize, Self: SerdePretty {
+      where T: Serialize {
         to_string_pretty(value)
       }
 
@@ -57,7 +54,7 @@ macro_rules! implement {
     impl SerdeBytes for $type {
       #[inline]
       fn to_vec_pretty<T>(&self, value: &T) -> Result<Vec<u8>, crate::Error>
-      where T: Serialize, Self: SerdePretty {
+      where T: Serialize {
         to_vec_pretty(value)
       }
 
@@ -93,7 +90,7 @@ macro_rules! implement {
     impl SerdeStream for $type {
       #[inline]
       fn to_writer_pretty<W, T>(&self, writer: W, value: &T) -> Result<(), crate::Error>
-      where W: Write, T: Serialize, Self: SerdePretty {
+      where W: Write, T: Serialize {
         to_writer_pretty(writer, value)
       }
 

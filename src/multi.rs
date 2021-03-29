@@ -26,7 +26,7 @@ use crate::formats::toml;
 #[cfg(feature = "xml")]
 use crate::formats::xml;
 
-use crate::traits::{SerdeText, SerdeBytes, SerdeStream, SerdePretty};
+use crate::traits::{SerdeText, SerdeBytes, SerdeStream};
 
 /// Dynamically pick which format data is serialized from or deserialized into.
 /// 
@@ -136,25 +136,12 @@ impl Format {
       _ => panic!("unsupported")
     }
   }
-
-  pub fn as_dyn_pretty(&self) -> &'static dyn SerdePretty {
-    match self {
-      #[cfg(feature = "json")]
-      Format::Json => &json::Json,
-      #[cfg(feature = "ron")]
-      Format::Ron => &ron::Ron,
-      #[cfg(feature = "toml")]
-      Format::Toml => &toml::Toml,
-      #[allow(unreachable_patterns)]
-      _ => panic!("unsupported")
-    }
-  }
 }
 
 impl SerdeText for Format {
   #[inline]
   fn to_string_pretty<T>(&self, value: &T) -> Result<String, crate::Error>
-  where T: Serialize, Self: SerdePretty {
+  where T: Serialize {
     to_string_pretty(*self, value).map_err(map_err)
   }
 
@@ -173,7 +160,7 @@ impl SerdeText for Format {
 
 impl SerdeBytes for Format {
   fn to_vec_pretty<T>(&self, value: &T) -> Result<Vec<u8>, crate::Error>
-  where T: Serialize, Self: SerdePretty {
+  where T: Serialize {
     to_vec_pretty(*self, value).map_err(map_err)
   }
 
@@ -190,7 +177,7 @@ impl SerdeBytes for Format {
 
 impl SerdeStream for Format {
   fn to_writer_pretty<W, T>(&self, writer: W, value: &T) -> Result<(), crate::Error>
-  where W: Write, T: Serialize, Self: SerdePretty {
+  where W: Write, T: Serialize {
     to_writer_pretty(*self, writer, value).map_err(map_err)
   }
 
@@ -204,8 +191,6 @@ impl SerdeStream for Format {
     from_reader(*self, reader).map_err(map_err)
   }
 }
-
-impl SerdePretty for Format {}
 
 impl Display for Format {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

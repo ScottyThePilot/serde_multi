@@ -6,7 +6,7 @@ use serde::de::{Deserialize, DeserializeOwned};
 use serde::ser::Serialize;
 use std::io::{Read, Write};
 
-use crate::traits::{SerdeBytes, SerdePretty, SerdeStream, SerdeText};
+use crate::traits::{SerdeBytes, SerdeStream, SerdeText};
 
 #[derive(Copy, Clone)]
 pub struct Json;
@@ -24,4 +24,3 @@ function!(from_reader, super::map_err, serde_json::from_reader);
 implement!(Json, SerdeTextPretty);
 implement!(Json, SerdeBytesPretty);
 implement!(Json, SerdeStreamPretty);
-implement!(Json, SerdePretty);
