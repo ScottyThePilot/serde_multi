@@ -482,7 +482,7 @@ where R: Read, T: DeserializeOwned {
     #[cfg(feature = "ron")]
     Format::Ron => ron::from_reader(reader).map_err(FormatError::Error),
     #[cfg(feature = "toml")]
-    Format::Toml => ron::from_reader(reader).map_err(FormatError::Error),
+    Format::Toml => toml::from_reader(reader).map_err(FormatError::Error),
     #[cfg(feature = "xml")]
     Format::Xml => xml::from_reader(reader).map_err(FormatError::Error),
     #[allow(unreachable_patterns)]
