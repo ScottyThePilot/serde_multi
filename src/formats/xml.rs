@@ -1,14 +1,14 @@
-//! XML serialization/deserialization, courtesy of the [`serde-xml-rs`] crate.
-//! 
+//! XML serialization/deserialization, via the [`serde-xml-rs`] crate.
+//!
 //! [`serde-xml-rs`]: https://crates.io/crates/serde-xml-rs
 
 use serde::de::{Deserialize, DeserializeOwned};
 use serde::ser::Serialize;
 use std::io::{Read, Write};
 
-use crate::traits::{SerdeBytes, SerdeStream, SerdeText};
+use crate::traits::{SerdeBytes, SerdeStream, SerdeText, Extension};
 
-#[derive(Copy, Clone, Default)]
+#[derive(Debug, Copy, Clone, Default)]
 pub struct Xml;
 
 function!(to_string, super::map_err, serde_xml_rs::to_string);
@@ -21,3 +21,4 @@ function!(from_reader, super::map_err, serde_xml_rs::from_reader);
 implement!(Xml, SerdeText);
 implement!(Xml, SerdeBytes);
 implement!(Xml, SerdeStream);
+implement!(Xml, Extension, "xml");

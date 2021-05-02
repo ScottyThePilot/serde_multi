@@ -1,8 +1,8 @@
-//! TOML serialization/deserialization, courtesy of the [`toml`] crate.
-//! 
+//! TOML serialization/deserialization, via the [`toml`] crate.
+//!
 //! Note: the [`toml`] crate does not expose any stream functions, so
 //! the writer functions here may be inefficient.
-//! 
+//!
 //! [`toml`]: https://crates.io/crates/toml
 //! [`SerdeStream`]: ../../traits/trait.SerdeStream.html
 
@@ -10,9 +10,9 @@ use serde::de::{Deserialize, DeserializeOwned};
 use serde::ser::Serialize;
 use std::io::{Read, Write};
 
-use crate::traits::{SerdeBytes, SerdeStream, SerdeText};
+use crate::traits::{SerdeBytes, SerdeStream, SerdeText, Extension};
 
-#[derive(Copy, Clone, Default)]
+#[derive(Debug, Copy, Clone, Default)]
 pub struct Toml;
 
 function!(to_string_pretty, super::map_err, serde_toml::to_string_pretty);
@@ -40,3 +40,4 @@ function!(from_reader, |t| t, |reader| {
 implement!(Toml, SerdeTextPretty);
 implement!(Toml, SerdeBytesPretty);
 implement!(Toml, SerdeStreamPretty);
+implement!(Toml, Extension, "toml");

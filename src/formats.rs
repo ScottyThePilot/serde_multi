@@ -15,6 +15,7 @@ pub mod toml;
 #[cfg(feature = "xml")]
 pub mod xml;
 
+#[inline(always)]
 fn map_err<T: std::error::Error + Send + Sync + 'static>(err: T) -> crate::Error {
   Box::new(err)
 }

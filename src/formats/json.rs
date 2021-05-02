@@ -1,14 +1,14 @@
-//! JSON serialization/deserialization, courtesy of the [`serde_json`] crate.
-//! 
+//! JSON serialization/deserialization, via the [`serde_json`] crate.
+//!
 //! [`serde_json`]: https://crates.io/crates/serde_json
 
 use serde::de::{Deserialize, DeserializeOwned};
 use serde::ser::Serialize;
 use std::io::{Read, Write};
 
-use crate::traits::{SerdeBytes, SerdeStream, SerdeText};
+use crate::traits::{SerdeBytes, SerdeStream, SerdeText, Extension};
 
-#[derive(Copy, Clone, Default)]
+#[derive(Debug, Copy, Clone, Default)]
 pub struct Json;
 
 function!(to_string_pretty, super::map_err, serde_json::to_string_pretty);
@@ -24,3 +24,4 @@ function!(from_reader, super::map_err, serde_json::from_reader);
 implement!(Json, SerdeTextPretty);
 implement!(Json, SerdeBytesPretty);
 implement!(Json, SerdeStreamPretty);
+implement!(Json, Extension, "json");

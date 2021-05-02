@@ -65,3 +65,8 @@ pub trait SerdeStream: SerdeBytes {
   fn from_reader<R, T>(&self, reader: R) -> Result<T, Error>
   where R: Read, T: DeserializeOwned, Self: Sized;
 }
+
+/// Allows a format to describe what extension it should have.
+pub trait Extension {
+  fn extension(&self) -> &str;
+}

@@ -1,8 +1,8 @@
 //! Utility enum for dynamically picking the data format.
-//! 
+//!
 //! Note that the functions here return [`FormatError`] instead of the usual [`Error`].
 //! Use these functions if you would like to be able to detect when a feature is unsupported.
-//! 
+//!
 //! [`FormatError`]: ./enum.FormatError.html
 //! [`Error`]: ../type.Error.html
 
@@ -29,11 +29,11 @@ use crate::formats::xml;
 use crate::traits::{SerdeText, SerdeBytes, SerdeStream};
 
 /// Dynamically pick which format data is serialized from or deserialized into.
-/// 
+///
 /// Note: calling the respective trait function for a format that does
 /// not support it will return a [`FormatError::Unsupported`] `Err`
 /// to indicate that that operation was not supported by the format.
-/// 
+///
 /// [`FormatError::Unsupported`]: ./enum.FormatError.html#variant.Unsupported
 #[non_exhaustive]
 #[derive(Copy, Clone, Debug)]
@@ -73,7 +73,7 @@ impl Format {
       #[cfg(feature = "xml")]
       Format::Xml => "XML",
       #[allow(unreachable_patterns)]
-      _ => "unsupported"
+      _ => panic!("unsupported")
     }
   }
 
@@ -159,16 +159,19 @@ impl SerdeText for Format {
 }
 
 impl SerdeBytes for Format {
+  #[inline]
   fn to_vec_pretty<T>(&self, value: &T) -> Result<Vec<u8>, crate::Error>
   where T: Serialize {
     to_vec_pretty(*self, value).map_err(map_err)
   }
 
+  #[inline]
   fn to_vec<T>(&self, value: &T) -> Result<Vec<u8>, crate::Error>
   where T: Serialize {
     to_vec(*self, value).map_err(map_err)
   }
 
+  #[inline]
   fn from_slice<'d, T>(&self, data: &'d [u8]) -> Result<T, crate::Error>
   where T: Deserialize<'d> {
     from_slice(*self, data).map_err(map_err)
@@ -176,16 +179,19 @@ impl SerdeBytes for Format {
 }
 
 impl SerdeStream for Format {
+  #[inline]
   fn to_writer_pretty<W, T>(&self, writer: W, value: &T) -> Result<(), crate::Error>
   where W: Write, T: Serialize {
     to_writer_pretty(*self, writer, value).map_err(map_err)
   }
 
+  #[inline]
   fn to_writer<W, T>(&self, writer: W, value: &T) -> Result<(), crate::Error>
   where W: Write, T: Serialize {
     to_writer(*self, writer, value).map_err(map_err)
   }
 
+  #[inline]
   fn from_reader<R, T>(&self, reader: R) -> Result<T, crate::Error>
   where R: Read, T: DeserializeOwned {
     from_reader(*self, reader).map_err(map_err)
@@ -193,8 +199,9 @@ impl SerdeStream for Format {
 }
 
 impl Display for Format {
+  #[inline]
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, "{}", self.name())
+    write!(f, "Format({})", self.name())
   }
 }
 
@@ -254,6 +261,9 @@ impl From<xml::Xml> for Format {
   }
 }
 
+/// An error caused by one of the functions in [`multi`].
+///
+/// [`multi`]: ./index.html
 pub enum FormatError {
   Error(crate::Error),
   Unsupported(Unsupported)
@@ -279,11 +289,13 @@ impl Display for FormatError {
 
 impl std::error::Error for FormatError {}
 
+#[derive(Debug, Copy, Clone)]
 pub enum Feature {
   Text,
   Bytes,
   Stream,
-  Pretty
+  Pretty,
+  Extension
 }
 
 impl Display for Feature {
@@ -292,23 +304,28 @@ impl Display for Feature {
       Feature::Text => write!(f, "text serialization/deserialization"),
       Feature::Bytes => write!(f, "binary serialization/deserialization"),
       Feature::Stream => write!(f, "stream serialization/deserialization"),
-      Feature::Pretty => write!(f, "pretty-print serialization")
+      Feature::Pretty => write!(f, "pretty-print serialization"),
+      Feature::Extension => writeln!(f, "file extensions")
     }
   }
 }
 
 pub struct Unsupported {
+  /// The format that caused this error.
   pub format: Format,
+  /// The feature that was unsupported.
   pub feature: Feature
 }
 
 impl Debug for Unsupported {
+  #[inline]
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, "Unsupported({}, {})", self.format, self.feature)
+    write!(f, "Unsupported({:?}, {:?})", self.format, self.feature)
   }
 }
 
 impl Display for Unsupported {
+  #[inline]
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(f, "{} does not support {}", self.format.name(), self.feature)
   }
@@ -323,7 +340,7 @@ fn map_err(format_error: FormatError) -> crate::Error {
   }
 }
 
-#[inline]
+#[inline(always)]
 fn unsupported(format: Format, feature: Feature) -> FormatError {
   FormatError::Unsupported(Unsupported { format, feature })
 }
@@ -487,5 +504,20 @@ where R: Read, T: DeserializeOwned {
     Format::Xml => xml::from_reader(reader).map_err(FormatError::Error),
     #[allow(unreachable_patterns)]
     _ => Err(unsupported(format, Feature::Stream))
+  }
+}
+
+pub fn extension(format: Format) -> Result<&'static str, Unsupported> {
+  match format {
+    #[cfg(feature = "json")]
+    Format::Json => Ok(json::EXTENSION),
+    #[cfg(feature = "ron")]
+    Format::Ron => Ok(ron::EXTENSION),
+    #[cfg(feature = "toml")]
+    Format::Toml => Ok(toml::EXTENSION),
+    #[cfg(feature = "xml")]
+    Format::Xml => Ok(xml::EXTENSION),
+    #[allow(unreachable_patterns)]
+    _ => Err(Unsupported { format, feature: Feature::Extension })
   }
 }

@@ -1,5 +1,5 @@
-//! Bincode serialization/deserialization, courtesy of the [`bincode`] crate.
-//! 
+//! Bincode serialization/deserialization, via the [`bincode`] crate.
+//!
 //! [`bincode`]: https://crates.io/crates/bincode
 
 use serde::de::{Deserialize, DeserializeOwned};
@@ -8,7 +8,7 @@ use std::io::{Read, Write};
 
 use crate::traits::{SerdeBytes, SerdeStream};
 
-#[derive(Copy, Clone, Default)]
+#[derive(Debug, Copy, Clone, Default)]
 pub struct Bincode;
 
 function!(to_vec, map_err, |value| serde_bincode::serialize(value));
@@ -19,7 +19,7 @@ function!(from_reader, map_err, |reader| serde_bincode::deserialize_from(reader)
 implement!(Bincode, SerdeBytes);
 implement!(Bincode, SerdeStream);
 
-#[inline]
+#[inline(always)]
 fn map_err(err: serde_bincode::Error) -> crate::Error {
   Box::new(*err)
 }

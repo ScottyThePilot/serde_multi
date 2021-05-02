@@ -107,6 +107,16 @@ macro_rules! implement {
       }
     }
   };
+  ($type:ty, Extension, $extension:literal) => {
+    pub const EXTENSION: &str = $extension;
+
+    impl Extension for $type {
+      #[inline]
+      fn extension(&self) -> &str {
+        EXTENSION
+      }
+    }
+  };
 }
 
 macro_rules! function {

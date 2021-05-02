@@ -1,14 +1,14 @@
-//! RON serialization/deserialization, courtesy of the [`ron`] crate.
-//! 
+//! RON serialization/deserialization, via the [`ron`] crate.
+//!
 //! [`ron`]: https://crates.io/crates/ron
 
 use serde::de::{Deserialize, DeserializeOwned};
 use serde::ser::Serialize;
 use std::io::{Read, Write};
 
-use crate::traits::{SerdeBytes, SerdeStream, SerdeText};
+use crate::traits::{SerdeBytes, SerdeStream, SerdeText, Extension};
 
-#[derive(Copy, Clone, Default)]
+#[derive(Debug, Copy, Clone, Default)]
 pub struct Ron;
 
 function!(to_string_pretty, super::map_err, |value| serde_ron::ser::to_string_pretty(value, pretty()));
@@ -24,6 +24,7 @@ function!(from_reader, super::map_err, serde_ron::de::from_reader);
 implement!(Ron, SerdeTextPretty);
 implement!(Ron, SerdeBytesPretty);
 implement!(Ron, SerdeStreamPretty);
+implement!(Ron, Extension, "ron");
 
 #[inline]
 fn pretty() -> serde_ron::ser::PrettyConfig {

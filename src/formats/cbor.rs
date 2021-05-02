@@ -1,5 +1,5 @@
-//! CBOR serialization/deserialization, courtesy of the [`serde_cbor`] crate.
-//! 
+//! CBOR serialization/deserialization, via the [`serde_cbor`] crate.
+//!
 //! [`serde_cbor`]: https://crates.io/crates/serde_cbor
 
 use serde::de::{Deserialize, DeserializeOwned};
@@ -8,7 +8,7 @@ use std::io::{Read, Write};
 
 use crate::traits::{SerdeBytes, SerdeStream};
 
-#[derive(Copy, Clone, Default)]
+#[derive(Debug, Copy, Clone, Default)]
 pub struct Cbor;
 
 function!(to_vec, super::map_err, serde_cbor::to_vec);

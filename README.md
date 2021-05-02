@@ -1,10 +1,7 @@
 # serde_multi
 
-This library exposes a standardized API across a number of file formats,
-traits to make this API easily implementable, and a `Format` enum for
-dynamically choosing the file format for Serialization/Deserialization.
-This crate does not do any substantial extra work, it simply re-organizes
-the APIs of a number of other serde file format crates.
+This library exposes a standardized API across a number of file formats, as well as providing traits to make it
+possible to dynamically choose file serialization/deserialization format at runtime or based on generics.
 
 Each file format is toggled via feature, all of which are disabled by default.
 
@@ -16,3 +13,20 @@ Currently the only supported file formats are:
 - RON (via [`ron`](https://crates.io/crates/ron))
 - TOML (via [`toml`](https://crates.io/crates/toml))
 - XML (via [`serde-xml-rs`](https://crates.io/crates/serde-xml-rs))
+
+If you would like to add more file formats, feel free to make a pull request.
+
+## Example Usage
+```rust
+use serde_multi::{SerdeText, Error};
+use serde_multi::formats::json::Json;
+use std::collections::HashMap;
+
+let mut value: HashMap<String, i32> = HashMap::new();
+value.insert("foo".to_owned(), -193);
+value.insert("bar".to_owned(), 3058);
+
+// `Json` can be swapped out for any value that implements `SerdeText` here.
+let s = Json.to_string(&value).expect("failed to serialize");
+println!("serialized: {}", s);
+```
