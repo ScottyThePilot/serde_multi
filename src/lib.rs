@@ -1,12 +1,9 @@
 #![deny(missing_debug_implementations)]
-//! This library exposes a standardized API across a number of file formats,
-//! [traits] to make this API easily implementable, and a [`Format`] enum for
-//! dynamically choosing the file format for Serialization/Deserialization.
-//! This crate does not do any substantial extra work, it simply re-organizes
-//! the APIs of a number of other serde file format crates.
+//! This library exposes a standardized API across a number of file formats, as well as providing traits to make it
+//! possible to dynamically choose file serialization/deserialization format at runtime or based on generics.
 //!
 //! Formats can be chosen dynamically with generics using the traits, or with dynamic dispatch.
-//! All file formats here implement ``
+//! All file formats here implement [`SerdeBytes`] and [`SerdeStream`].
 //!
 //! Each file format is toggled via feature, all of which are disabled by default.
 //!
@@ -36,6 +33,8 @@
 //!
 //! [traits]: ./traits/index.html
 //! [`Format`]: ./multi/enum.Format.html
+//! [`SerdeBytes`]: ./traits/enum.SerdeBytes.html
+//! [`SerdeStream`]: ./traits/enum.SerdeStream.html
 //! [Bincode]: ./formats/bincode/index.html
 //! [CBOR]: ./formats/cbor/index.html
 //! [JSON]: ./formats/json/index.html
