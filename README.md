@@ -2,6 +2,8 @@
 [![Crate](https://img.shields.io/crates/v/serde_multi.svg)](https://crates.io/crates/serde_multi)
 [![API](https://docs.rs/serde_multi/badge.svg)](https://docs.rs/serde_multi)
 
+**Note: This is deprecated in favor of [`erased-serde`](https://github.com/dtolnay/erased-serde)**
+
 This library exposes a standardized API across a number of file formats, as well as providing traits to make it
 possible to dynamically choose file serialization/deserialization format at runtime or based on generics.
 
